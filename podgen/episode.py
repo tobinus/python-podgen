@@ -25,6 +25,8 @@ from podgen.util import formatRFC2822, listToHumanreadableStr
 from podgen.constants import EPISODE_TYPE_FULL, EPISODE_TYPE_TRAILER, EPISODE_TYPE_BONUS
 from podgen.compat import string_types
 
+from .transcript import Transcript
+
 
 class Episode(object):
     """Class representing an episode in a podcast. Corresponds to an RSS Item.
@@ -191,6 +193,17 @@ class Episode(object):
         :RSS: itunes:subtitle
         """
 
+        self.__transcript = None
+        """The episode transcript link.
+        
+        The transcript tag exists in the podcast namespace
+        https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md#transcript
+        https://podcastindex.org/namespace/1.0
+        
+        :type: :obj:`Transcript`
+        :RSS: podcast:transcript
+        """
+
         # It is time to assign the keyword arguments
         for attribute, value in iteritems(kwargs):
             if hasattr(self, attribute):
@@ -210,6 +223,7 @@ class Episode(object):
 
         ITUNES_NS = 'http://www.itunes.com/dtds/podcast-1.0.dtd'
         DUBLIN_NS = 'http://purl.org/dc/elements/1.1/'
+        PODCAST_NS = 'https://podcastindex.org/namespace/1.0'
 
         entry = etree.Element('item')
 
@@ -333,6 +347,15 @@ class Episode(object):
         if self.subtitle:
             subtitle = etree.SubElement(entry, '{%s}subtitle' % ITUNES_NS)
             subtitle.text = self.subtitle
+
+        if self.transcript:
+            transcript = etree.SubElement(entry, '{%s}transcript' % PODCAST_NS)
+            transcript.attrib['url'] = self.transcript.url
+            transcript.attrib['type'] = self.transcript.type
+            if self.transcript.language_code:
+                transcript.attrib['language'] = self.transcript.language_code
+            if self.transcript.is_caption:
+                transcript.attrib['rel'] = "captions"
 
         return entry
 
@@ -666,3 +689,23 @@ class Episode(object):
                 )
         else:
             self.__episode_number = None
+
+    @property
+    def transcript(self):
+        """The episode transcript.
+
+        :type: :class:`podgen.Transcript`
+        :RSS: podcast:transcript
+        """
+        return self.__transcript
+
+    @transcript.setter
+    def transcript(self, transcript):
+        if transcript is not None:
+            if isinstance(transcript, Transcript):
+                self.__transcript = transcript
+            else:
+                raise TypeError("A Transcript object must be used, got "
+                                "%r" % transcript)
+        else:
+            self.__transcript = None
