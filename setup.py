@@ -15,7 +15,7 @@ setup(
         keywords = ['feed', 'RSS', 'podcast', 'iTunes', 'generator'],
         license = 'FreeBSD and LGPLv3+',
         install_requires = ['lxml', 'dateutils', 'future', 'pytz', 'tinytag',
-                            'requests'],
+                            'requests', 'pycountry'],
         python_requires = '>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
         classifiers = [
             'Development Status :: 5 - Production/Stable',
