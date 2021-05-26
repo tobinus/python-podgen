@@ -45,7 +45,7 @@ def main():
     # Remember what type of feed the user wants
     arg = sys.argv[1]
 
-    from podgen import Podcast, Person, Media, Category, htmlencode
+    from podgen import Podcast, Person, Media, Category, Transcript, htmlencode
     # Initialize the feed
     p = Podcast()
     p.name = 'Testfeed'
@@ -80,6 +80,12 @@ def main():
     e1.media = Media("http://example.com/episodes/loremipsum.mp3", 454599964,
                      duration=
                      datetime.timedelta(hours=1, minutes=32, seconds=19))
+    e1.transcript = Transcript(
+        "https://examples.com/transcript_sample.txt",
+        "text/html",
+        language_code="es",
+        is_caption=True
+    )
 
     # Should we just print out, or write to file?
     if arg == 'rss':
