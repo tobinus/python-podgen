@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-    podgen.category
+    podgen.transcript
     ~~~~~~~~~~~~~~~
 
     This module contains Transcript, which represents an episode transcript.
