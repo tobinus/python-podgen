@@ -86,7 +86,8 @@ class Podcast(object):
             'atom':  'http://www.w3.org/2005/Atom',
             'content': 'http://purl.org/rss/1.0/modules/content/',
             'itunes': 'http://www.itunes.com/dtds/podcast-1.0.dtd',
-            'dc': 'http://purl.org/dc/elements/1.1/'
+            'dc': 'http://purl.org/dc/elements/1.1/',
+            'podcast': 'https://podcastindex.org/namespace/1.0',
         }
         """A dictionary which maps namespace prefixes to their namespace URI.
         Add a new entry here if you want to use that namespace.
