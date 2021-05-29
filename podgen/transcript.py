@@ -16,6 +16,7 @@ from future.moves.urllib.parse import urlparse
 import warnings
 
 import pycountry
+import validators
 
 from podgen.warnings import NotSupportedByItunesWarning
 
@@ -101,6 +102,10 @@ class Transcript(object):
     def url(self, url):
         if not url:
             raise ValueError("url cannot be empty or None")
+
+        if validators.url(url) is not True:
+            raise ValueError("Not a valid url: %s" % url)
+
         parsed_url = urlparse(url)
         if parsed_url.scheme not in ("http", "https"):
             warnings.warn("URL scheme %s is not supported by iTunes. Make sure "
@@ -120,6 +125,9 @@ class Transcript(object):
 
     @type.setter
     def type(self, type_):
+        if not type_:
+            raise ValueError("Transcript type cannot be empty or None")
+
         type_ = type_.lower()
         if type_ not in self._accepted_types:
             raise ValueError(
@@ -140,28 +148,30 @@ class Transcript(object):
 
     @language_code.setter
     def language_code(self, language_code):
-        language_country = language_code.split("-")
-        language = language_country[0]
-        if len(language_country) > 1:
-            country = language_country[1]
-        else:
-            country = None
+        if language_code:
+            language_country = language_code.split("-")
+            language = language_country[0]
+            if len(language_country) > 1:
+                country = language_country[1]
+            else:
+                country = None
 
-        try:
-            language = pycountry.languages.lookup(language).alpha_2
-        except:
-            raise ValueError("Language code %r is unknown" % language)
-
-        if country:
             try:
-                country = pycountry.countries.lookup(country).alpha_2
+                language = pycountry.languages.lookup(language).alpha_2
             except:
-                raise ValueError("Country code %r is unknown" % country)
+                raise ValueError("Language code %r is unknown" % language)
 
-        if country:
-            self._language_code = f"{language}-{country}"
+            if country:
+                try:
+                    country = pycountry.countries.lookup(country).alpha_2
+                    self._language_code = f"{language}-{country}"
+                except:
+                    raise ValueError("Country code %r is unknown" % country)
+            else:
+                self._language_code = language
 
-        self._language_code = language
+        else:
+            self._language_code = None
 
     @property
     def is_caption(self):
