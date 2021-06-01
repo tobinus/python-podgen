@@ -13,6 +13,7 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 from builtins import *
 from future.moves.urllib.parse import urlparse
 
+import sys
 import warnings
 
 import pycountry
@@ -148,7 +149,9 @@ class Transcript(object):
 
     @language_code.setter
     def language_code(self, language_code):
-        if language_code:
+        # pycountry does not work in python 2 anymore
+        version = sys.version_info[0]
+        if language_code and version !=2:
             language_country = language_code.split("-")
             language = language_country[0]
             if len(language_country) > 1:
@@ -171,7 +174,11 @@ class Transcript(object):
                 self._language_code = language
 
         else:
-            self._language_code = None
+            if language_code:
+                # python2 case
+                self._language_code = language_code
+            else:
+                self._language_code = None
 
     @property
     def is_caption(self):
