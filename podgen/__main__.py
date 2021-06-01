@@ -83,7 +83,7 @@ def main():
     e1.transcript = Transcript(
         "https://examples.com/transcript_sample.txt",
         "text/html",
-        language_code="es",
+        language="es",
         is_caption=True
     )
 

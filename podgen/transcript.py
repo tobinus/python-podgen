@@ -33,7 +33,7 @@ class Transcript(object):
     Example::
 
         >>> from podgen import Transcript
-        >>> t = Transcript("https://examples.com/transcript_sample.txt", "text/html", language_code="es", is_caption=False)
+        >>> t = Transcript("https://examples.com/transcript_sample.txt", "text/html", language="es", is_caption=False)
         >>> t.url
         https://examples.com/transcript_sample.txt
         >>> t.type
@@ -55,7 +55,7 @@ class Transcript(object):
         "application/srt", "application/json"
     ]
 
-    def __init__(self, url, type_, language_code=None, is_caption=False):
+    def __init__(self, url, type_, language=None, is_caption=False):
         """Create new Transcript object. See the class description of
         :class:´~podgen.transcript.Transcript`.
 
@@ -63,8 +63,8 @@ class Transcript(object):
         :type url: str
         :param type: Mime type of the transcript file.
         :type type: str
-        :param language_code: (Optional) Language of the transcript.
-        :type language_code: str or None
+        :param language: (Optional) Language of the transcript.
+        :type language: str or None
         :param is_caption: (Optional) Set to True if the file the
         linked file is considered to be a closed captions file
         :type is_caption: bool
@@ -72,12 +72,12 @@ class Transcript(object):
 
         self._url = None
         self._type = None
-        self._language_code = None
+        self._language = None
         self._is_caption = None
 
         self.url = url
         self.type = type_
-        self.language_code = language_code
+        self.language = language
         self.is_caption = is_caption
 
     @property
@@ -139,20 +139,20 @@ class Transcript(object):
         self._type = type_
 
     @property
-    def language_code(self):
+    def language(self):
         """The language of the linked transcript.
         https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md#transcript
 
         :type: :obj:`str` or `None`
         """
-        return self._language_code
+        return self._language
 
-    @language_code.setter
-    def language_code(self, language_code):
+    @language.setter
+    def language(self, language):
         # pycountry does not work in python 2 anymore
         version = sys.version_info[0]
-        if language_code and version !=2:
-            language_country = language_code.split("-")
+        if language and version !=2:
+            language_country = language.split("-")
             language = language_country[0]
             if len(language_country) > 1:
                 country = language_country[1]
@@ -167,18 +167,18 @@ class Transcript(object):
             if country:
                 try:
                     country = pycountry.countries.lookup(country).alpha_2
-                    self._language_code = language + "-" + country
+                    self._language = language + "-" + country
                 except:
                     raise ValueError("Country code %r is unknown" % country)
             else:
-                self._language_code = language
+                self._language = language
 
         else:
-            if language_code:
+            if language:
                 # python2 case
-                self._language_code = language_code
+                self._language = language
             else:
-                self._language_code = None
+                self._language = None
 
     @property
     def is_caption(self):
@@ -201,5 +201,5 @@ class Transcript(object):
         self._is_caption = is_caption
 
     def __repr__(self):
-        return 'Transcript(url=%s, type=%s, language_code=%s, is_caption=%s)' % \
-               (self.url, self.type, self.language_code, self.is_caption)
+        return 'Transcript(url=%s, type=%s, language=%s, is_caption=%s)' % \
+               (self.url, self.type, self.language, self.is_caption)

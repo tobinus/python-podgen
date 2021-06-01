@@ -21,7 +21,7 @@ class TestTranscript(unittest.TestCase):
     def setUp(self):
         self.url = "https://examples.com/transcript_sample.txt"
         self.type = "text/html"
-        self.language_code = "es-US"
+        self.language = "es-US"
         self.is_caption = True
         self.version = sys.version_info[0]
 
@@ -29,7 +29,7 @@ class TestTranscript(unittest.TestCase):
         return Transcript(
             self.url,
             self.type,
-            language_code=self.language_code,
+            language=self.language,
             is_caption=self.is_caption
         )
 
@@ -37,21 +37,21 @@ class TestTranscript(unittest.TestCase):
         t = Transcript(self.url, self.type)
         assert t.url == self.url
         assert t.type == self.type
-        assert t.language_code is None
+        assert t.language is None
         assert t.is_caption is False
 
     def test_isCaption(self):
         t = Transcript(self.url, self.type, is_caption=True)
         assert t.url == self.url
         assert t.type == self.type
-        assert t.language_code is None
+        assert t.language is None
         assert t.is_caption is True
 
     def test_languageCode(self):
-        t = Transcript(self.url, self.type, language_code=self.language_code)
+        t = Transcript(self.url, self.type, language=self.language)
         assert t.url == self.url
         assert t.type == self.type
-        assert t.language_code == self.language_code
+        assert t.language == self.language
         assert t.is_caption is False
 
     def test_languageAndIsCaption(self):
@@ -59,11 +59,11 @@ class TestTranscript(unittest.TestCase):
             self.url,
             self.type,
             is_caption=self.is_caption,
-            language_code=self.language_code
+            language=self.language
         )
         assert t.url == self.url
         assert t.type == self.type
-        assert t.language_code == self.language_code
+        assert t.language == self.language
         assert t.is_caption == self.is_caption
 
     def test_settingUrl(self):
@@ -72,7 +72,7 @@ class TestTranscript(unittest.TestCase):
         t.url = other_url
         assert t.url == other_url
         assert t.type == self.type
-        assert t.language_code == self.language_code
+        assert t.language == self.language
         assert t.is_caption == self.is_caption
 
     def test_settingType(self):
@@ -81,22 +81,22 @@ class TestTranscript(unittest.TestCase):
         t.type = other_type
         assert t.url == self.url
         assert t.type == other_type
-        assert t.language_code == self.language_code
+        assert t.language == self.language
         assert t.is_caption == self.is_caption
 
     def test_settingLanguageCode(self):
         other_language = "fr-CA"
         t = self._transcript()
-        t.language_code = other_language
+        t.language = other_language
         assert t.url == self.url
         assert t.type == self.type
-        assert t.language_code == other_language
+        assert t.language == other_language
         assert t.is_caption == self.is_caption
 
-        t.language_code = None
+        t.language = None
         assert t.url == self.url
         assert t.type == self.type
-        assert t.language_code == None
+        assert t.language == None
         assert t.is_caption == self.is_caption
 
     def test_languageCaseInsensitive(self):
@@ -104,8 +104,8 @@ class TestTranscript(unittest.TestCase):
             assert True
         else:
             t = self._transcript()
-            t.language_code = "fR-cA"
-            assert t.language_code == "fr-CA"
+            t.language = "fR-cA"
+            assert t.language == "fr-CA"
 
     def test_settingIsCaption(self):
         other_caption_option = False
@@ -113,14 +113,14 @@ class TestTranscript(unittest.TestCase):
         t.is_caption = other_caption_option
         assert t.url == self.url
         assert t.type == self.type
-        assert t.language_code == self.language_code
+        assert t.language == self.language
         assert t.is_caption == other_caption_option
 
         old_caption_option = t.is_caption
         t.is_caption = not old_caption_option
         assert t.url == self.url
         assert t.type == self.type
-        assert t.language_code == self.language_code
+        assert t.language == self.language
         assert t.is_caption != old_caption_option
 
     def test_missingUrl(self):
