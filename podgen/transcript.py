@@ -164,7 +164,7 @@ class Transcript(object):
             if country:
                 try:
                     country = pycountry.countries.lookup(country).alpha_2
-                    self._language_code = f"{language}-{country}"
+                    self._language_code = language + "-" + country
                 except:
                     raise ValueError("Country code %r is unknown" % country)
             else:
