@@ -193,15 +193,12 @@ class Episode(object):
         :RSS: itunes:subtitle
         """
 
-        self.__transcript = None
-        """The episode transcript link.
+        self.__transcripts = []
+        """List of episode transcript links.
         
         The transcript tag exists in the podcast namespace
         https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md#transcript
         https://podcastindex.org/namespace/1.0
-        
-        :type: :obj:`Transcript`
-        :RSS: podcast:transcript
         """
 
         # It is time to assign the keyword arguments
@@ -348,14 +345,15 @@ class Episode(object):
             subtitle = etree.SubElement(entry, '{%s}subtitle' % ITUNES_NS)
             subtitle.text = self.subtitle
 
-        if self.transcript:
-            transcript = etree.SubElement(entry, '{%s}transcript' % PODCAST_NS)
-            transcript.attrib['url'] = self.transcript.url
-            transcript.attrib['type'] = self.transcript.type
-            if self.transcript.language_code:
-                transcript.attrib['language'] = self.transcript.language_code
-            if self.transcript.is_caption:
-                transcript.attrib['rel'] = "captions"
+        if self.transcripts:
+            for transcript in self.transcripts:
+                transcriptElem = etree.SubElement(entry, '{%s}transcript' % PODCAST_NS)
+                transcriptElem.attrib['url'] = transcript.url
+                transcriptElem.attrib['type'] = transcript.type
+                if transcript.language:
+                    transcriptElem.attrib['language'] = transcript.language
+                if transcript.is_caption:
+                    transcriptElem.attrib['rel'] = "captions"
 
         return entry
 
@@ -691,21 +689,54 @@ class Episode(object):
             self.__episode_number = None
 
     @property
-    def transcript(self):
-        """The episode transcript.
+    def transcripts(self):
+        """List of :class: `podgen.Transcript` objects that
+        contains the episode transcriptions data.
 
-        :type: :class:`podgen.Transcript`
-        :RSS: podcast:transcript
+         See :py:meth:`.add_transcript` for an easy way to create new transcripts and
+        assign them to this episode in one call.
+
+        :type: :obj:`list` of :class:`podgen.Transcript`
+        :RSS: item child elements
         """
-        return self.__transcript
+        return self.__transcripts
 
-    @transcript.setter
-    def transcript(self, transcript):
-        if transcript is not None:
-            if isinstance(transcript, Transcript):
-                self.__transcript = transcript
-            else:
+    @transcripts.setter
+    def transcripts(self, transcripts):
+        # Ensure it is a list of transcripts or empty list
+        if transcripts is None:
+            transcripts = []
+
+        try:
+            transcripts = list(transcripts)
+        except:
+            raise TypeError("Expected an iterable of transcripts, got %r" % transcripts)
+
+        for transcript in transcripts:
+            if not isinstance(transcript, Transcript):
                 raise TypeError("A Transcript object must be used, got "
                                 "%r" % transcript)
-        else:
-            self.__transcript = None
+
+        self.__transcripts = transcripts
+
+    def add_transcript(self, new_transcript):
+        """Shorthand method which adds a new transcript to the episode.
+        The transcript object must be passed as a parameter to make sure
+        all the required parameters are specified and valid.
+        This is the easiest way to add a transcript to an episode.
+
+        :param new_transcript: :class:`.Transcript` object to add.
+        :returns: Transcript object passed to this function.
+
+        Example::
+
+            >>> import podgen
+            >>> transcript = Transcript("https://examples.com/transcript_sample.txt", "text/html")
+            >>> # adding the transcript to the podcast object p
+            >>> p.add_episode(transcript)
+
+        Internally, this method creates a new instance of
+        :attr:`~podgen.Transcript`, which means you can change what
+        """
+        self.transcripts.append(new_transcript)
+        return new_transcript

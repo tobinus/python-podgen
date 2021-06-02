@@ -80,12 +80,18 @@ def main():
     e1.media = Media("http://example.com/episodes/loremipsum.mp3", 454599964,
                      duration=
                      datetime.timedelta(hours=1, minutes=32, seconds=19))
-    e1.transcript = Transcript(
+    transcript1 = Transcript(
         "https://examples.com/transcript_sample.txt",
         "text/html",
         language="es",
         is_caption=True
     )
+    e1.add_transcript(transcript1)
+    transcript2 = Transcript(
+        "https://examples.com/transcript_sample_2.txt",
+        "text/html"
+    )
+    e1.add_transcript(transcript2)
 
     # Should we just print out, or write to file?
     if arg == 'rss':
