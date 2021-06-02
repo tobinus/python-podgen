@@ -65,8 +65,8 @@ class Transcript(object):
         :type type: str
         :param language: (Optional) Language of the transcript.
         :type language: str or None
-        :param is_caption: (Optional) Set to True if the file the
-        linked file is considered to be a closed captions file
+        :param is_caption: (Optional) Set to True if the linked
+        file is considered to be a closed captions file
         :type is_caption: bool
         """
 
