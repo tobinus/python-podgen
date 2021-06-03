@@ -410,7 +410,6 @@ class TestPodcast(unittest.TestCase):
     def do_authorsInvalidValue(self):
         self.fg.authors = Person("Opsie", "forgot@list.org")
 
-
     def test_webMaster(self):
         self.fg.web_master = Person(None, "justan@email.address")
         channel = self.fg._create_rss().find("channel")

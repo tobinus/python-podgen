@@ -17,7 +17,7 @@ import warnings
 
 from lxml import etree
 
-from podgen import Person, Media, Podcast, htmlencode, Episode, \
+from podgen import Person, Media, Podcast, htmlencode, Episode, Transcript, \
     NotSupportedByItunesWarning, EPISODE_TYPE_FULL, EPISODE_TYPE_BONUS, \
     EPISODE_TYPE_TRAILER
 import datetime
@@ -717,3 +717,55 @@ class TestBaseEpisode(unittest.TestCase):
         element = get_element()
         assert element is not None
         self.assertEqual(element.text, title)
+
+    def test_addTranscript(self):
+        fe = self.fe
+        transcript_tags_number = len(fe.transcripts)
+
+        t1 = Transcript(
+            "https://examples.com/transcript_sample.txt",
+            "text/html",
+            language="es",
+            is_caption=True
+        )
+        fe.add_transcript(t1)
+        assert len(fe.transcripts)==transcript_tags_number + 1
+
+        t2 = Transcript(
+            "https://examples.com/transcript_sample_2.txt",
+            "text/html"
+        )
+        fe.add_transcript(t2)
+        assert len(fe.transcripts) == transcript_tags_number + 2
+
+    def test_removeTranscriptByIndex(self):
+        fe = self.fe
+        transcript_tags_number = len(fe.transcripts)
+
+        t1 = Transcript(
+            "https://examples.com/transcript_sample.txt",
+            "text/html",
+            language="es",
+            is_caption=True
+        )
+        fe.add_transcript(t1)
+        assert len(fe.transcripts) == transcript_tags_number + 1
+
+        fe.transcripts.pop(0)
+        assert len(fe.transcripts) == transcript_tags_number
+
+    def test_removeTranscriptByEntry(self):
+        fe = self.fe
+        transcript_tags_number = len(fe.transcripts)
+
+        t1 = Transcript(
+            "https://examples.com/transcript_sample.txt",
+            "text/html",
+            language="es",
+            is_caption=True
+        )
+        fe.add_transcript(t1)
+        assert len(fe.transcripts) == transcript_tags_number + 1
+
+        fe.transcripts.remove(t1)
+        assert len(fe.transcripts) == transcript_tags_number
