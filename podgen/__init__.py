@@ -20,6 +20,7 @@ from .episode import Episode
 from .media import Media
 from .person import Person
 from .transcript import Transcript
+from .location import Location
 from .warnings import NotSupportedByItunesWarning, PodgenWarning, \
     LegacyCategoryWarning, NotRecommendedWarning
 from .category import Category
