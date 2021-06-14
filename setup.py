@@ -7,7 +7,7 @@ setup(
         name = 'podgen',
         packages = ['podgen'],
         # Remember to update the version in podgen.version, too!
-        version = '1.1.0',
+        version = '1.1.1',
         description = 'Generating podcasts with Python should be easy!',
         author = 'Thorben W. S. Dahl',
         author_email = 'thorben@sjostrom.no',
@@ -15,7 +15,7 @@ setup(
         keywords = ['feed', 'RSS', 'podcast', 'iTunes', 'generator'],
         license = 'FreeBSD and LGPLv3+',
         install_requires = ['lxml', 'dateutils', 'future', 'pytz', 'tinytag',
-                            'requests'],
+                            'requests', 'pycountry', 'validators'],
         python_requires = '>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
         classifiers = [
             'Development Status :: 5 - Production/Stable',

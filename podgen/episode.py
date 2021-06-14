@@ -25,6 +25,9 @@ from podgen.util import formatRFC2822, listToHumanreadableStr
 from podgen.constants import EPISODE_TYPE_FULL, EPISODE_TYPE_TRAILER, EPISODE_TYPE_BONUS
 from podgen.compat import string_types
 
+from .transcript import Transcript
+from .location import Location
+
 
 class Episode(object):
     """Class representing an episode in a podcast. Corresponds to an RSS Item.
@@ -191,6 +194,23 @@ class Episode(object):
         :RSS: itunes:subtitle
         """
 
+        self.__transcripts = []
+        """List of episode transcript links.
+        
+        The transcript tag exists in the podcast namespace
+        https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md#transcript
+        https://podcastindex.org/namespace/1.0
+        """
+
+        self.__location = None
+        """The location of the episode.
+
+        See https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md#location
+        for an overview of the location tag
+
+       :type: :obj:`podgen.Location`
+        """
+
         # It is time to assign the keyword arguments
         for attribute, value in iteritems(kwargs):
             if hasattr(self, attribute):
@@ -210,6 +230,7 @@ class Episode(object):
 
         ITUNES_NS = 'http://www.itunes.com/dtds/podcast-1.0.dtd'
         DUBLIN_NS = 'http://purl.org/dc/elements/1.1/'
+        PODCAST_NS = 'https://podcastindex.org/namespace/1.0'
 
         entry = etree.Element('item')
 
@@ -333,6 +354,20 @@ class Episode(object):
         if self.subtitle:
             subtitle = etree.SubElement(entry, '{%s}subtitle' % ITUNES_NS)
             subtitle.text = self.subtitle
+
+        if self.transcripts:
+            for transcript in self.transcripts:
+                transcriptElem = etree.SubElement(entry, '{%s}transcript' % PODCAST_NS)
+                transcriptElem.attrib['url'] = transcript.url
+                transcriptElem.attrib['type'] = transcript.type
+                if transcript.language:
+                    transcriptElem.attrib['language'] = transcript.language
+                if transcript.is_caption:
+                    transcriptElem.attrib['rel'] = "captions"
+
+        if self.location:
+            locationElem = self.location.rss_entry()
+            entry.append(locationElem)
 
         return entry
 
@@ -666,3 +701,87 @@ class Episode(object):
                 )
         else:
             self.__episode_number = None
+
+    @property
+    def transcripts(self):
+        """List of :class: `podgen.Transcript` objects that
+        contains the episode transcriptions data.
+
+         See :py:meth:`.add_transcript` for an easy way to create new transcripts and
+        assign them to this episode in one call.
+
+        :type: :obj:`list` of :class:`podgen.Transcript`
+        :RSS: item child elements
+        """
+        return self.__transcripts
+
+    @transcripts.setter
+    def transcripts(self, transcripts):
+        # Ensure it is a list of transcripts or empty list
+        if transcripts is None:
+            transcripts = []
+
+        try:
+            transcripts = list(transcripts)
+        except:
+            raise TypeError("Expected an iterable of transcripts, got %r" % transcripts)
+
+        for transcript in transcripts:
+            if not isinstance(transcript, Transcript):
+                raise TypeError("A Transcript object must be used, got "
+                                "%r" % transcript)
+
+        self.__transcripts = transcripts
+
+    def add_transcript(self, new_transcript):
+        """Shorthand method which adds a new transcript to the episode.
+        The transcript object must be passed as a parameter to make sure
+        all the required parameters are specified and valid.
+        This is the easiest way to add a transcript to an episode.
+
+        :param new_transcript: :class:`.Transcript` object to add.
+        :returns: Transcript object passed to this function.
+
+        Example::
+
+            >>> import podgen
+            >>> transcript = Transcript("https://examples.com/transcript_sample.txt", "text/html")
+            >>> # adding the transcript to the podcast object p
+            >>> p.add_episode(transcript)
+
+        Internally, this method creates a new instance of
+        :attr:`~podgen.Transcript`, which means you can change what
+        """
+        self.transcripts.append(new_transcript)
+        return new_transcript
+
+    @property
+    def location(self):
+        """Object of :class:`~podgen.Location` with data about the episode location
+
+        The location helps into parsing coordinaes and geo uri::
+
+            >>> e.location = Location("Austin, TX", osm="R113314")
+            >>> e.location.text
+            'Austin, TX'
+            >>> e.location.osm
+            'R113314'
+            >>> e.location.latitude = 30.2672
+            >>> e.location.longitude = 97.7431
+            >>> e.location.geo
+            'geo:30.2672,97.7431'
+
+        :type: :obj:`podgen.Location`
+        """
+        return self.__location
+
+    @location.setter
+    def location(self, location):
+        if location is None:
+            self.__location = None
+        else:
+            if not isinstance(location, Location):
+                raise ValueError("Location attribute must be a podgen.Location object."
+                                 "Received %r instead" % location)
+            else:
+                self.__location = location

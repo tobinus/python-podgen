@@ -22,7 +22,7 @@ from lxml import etree
 import tempfile
 import os
 
-from podgen import NotSupportedByItunesWarning, Person, Category, Podcast
+from podgen import NotSupportedByItunesWarning, Person, Category, Podcast, Location
 import podgen.version
 import datetime
 import dateutil.tz
@@ -410,6 +410,10 @@ class TestPodcast(unittest.TestCase):
     def do_authorsInvalidValue(self):
         self.fg.authors = Person("Opsie", "forgot@list.org")
 
+    def test_settingLocation(self):
+        self.fg.location = Location("My location")
+        assert self.fg.location
+        assert self.fg.location.text == "My location"
 
     def test_webMaster(self):
         self.fg.web_master = Person(None, "justan@email.address")
@@ -620,7 +624,7 @@ class TestPodcast(unittest.TestCase):
         # upgrade, we will only include the new RSS tag if this field has been
         # changed from its default. Episodic is the default either way.
         assert podcast_type is None
-    
+
     def test_isSerialWhenTrue(self):
         self.fg.is_serial = True
 
