@@ -25,6 +25,7 @@ from podgen.warnings import NotSupportedByItunesWarning
 from podgen.util import ensure_format, formatRFC2822, listToHumanreadableStr, \
     htmlencode
 from podgen.person import Person
+from podgen.location import Location
 import podgen.version
 import sys
 from podgen.compat import string_types
@@ -189,6 +190,15 @@ class Podcast(object):
 
         :type: :obj:`str`
         :RSS: language
+        """
+
+        self.__location = None
+        """The location of the podcast.
+        
+        See https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md#location
+        for an overview of the location tag
+       
+       :type: :obj:`podgen.Location`
         """
 
         self.__last_updated = None
@@ -623,6 +633,10 @@ class Podcast(object):
             link_to_hub.attrib['href'] = self.pubsubhubbub
             link_to_hub.attrib['rel'] = 'hub'
 
+        if self.location:
+            locationElem = self.location.rss_entry()
+            channel.append(locationElem)
+
         for entry in self.episodes:
             # Do episode checks that depend on information from Podcast
             episode_number_is_mandatory = (
@@ -936,6 +950,37 @@ class Podcast(object):
             raise TypeError("Only iterable types can be assigned to authors, "
                             "%s given. You must put your object in a list, "
                             "even if there's only one author." % authors)
+
+    @property
+    def location(self):
+        """Object of :class:`~podgen.Location` with data about the podacst location
+
+        The location helps into parsing coordinaes and geo uri::
+
+            >>> p.location = Location("Austin, TX", osm="R113314")
+            >>> p.location.text
+            'Austin, TX'
+            >>> p.location.osm
+            'R113314'
+            >>> p.location.latitude = 30.2672
+            >>> p.location.longitude = 97.7431
+            >>> p.location.geo
+            'geo:30.2672,97.7431'
+
+        :type: :obj:`podgen.Location`
+        """
+        return self.__location
+
+    @location.setter
+    def location(self, location):
+        if location is None:
+            self.__location = None
+        else:
+            if not isinstance(location, Location):
+                raise ValueError("Location attribute must be a podgen.Location object."
+                                 "Received %r instead" % location)
+            else:
+                self.__location = location
 
     @property
     def publication_date(self):

@@ -45,7 +45,7 @@ def main():
     # Remember what type of feed the user wants
     arg = sys.argv[1]
 
-    from podgen import Podcast, Person, Media, Category, Transcript, htmlencode
+    from podgen import Podcast, Person, Media, Category, Transcript, Location, htmlencode
     # Initialize the feed
     p = Podcast()
     p.name = 'Testfeed'
@@ -55,6 +55,7 @@ def main():
     p.description = 'This is a cool feed!'
     p.is_serial = True
     p.language = 'de'
+    p.location = Location("Austin, TX", osm="R113314", geo="geo:30.2672,97.7431")
     p.feed_url = 'http://example.com/feeds/myfeed.rss'
     p.category = Category('Leisure', 'Aviation')
     p.explicit = False
@@ -92,6 +93,9 @@ def main():
         "text/html"
     )
     e1.add_transcript(transcript2)
+    e1.location = Location(
+        "Dreamworld (Queensland)", geo="geo:-27.86159,153.3169", osm="W43678282"
+    )
 
     # Should we just print out, or write to file?
     if arg == 'rss':

@@ -26,6 +26,7 @@ from podgen.constants import EPISODE_TYPE_FULL, EPISODE_TYPE_TRAILER, EPISODE_TY
 from podgen.compat import string_types
 
 from .transcript import Transcript
+from .location import Location
 
 
 class Episode(object):
@@ -201,6 +202,15 @@ class Episode(object):
         https://podcastindex.org/namespace/1.0
         """
 
+        self.__location = None
+        """The location of the episode.
+
+        See https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md#location
+        for an overview of the location tag
+
+       :type: :obj:`podgen.Location`
+        """
+
         # It is time to assign the keyword arguments
         for attribute, value in iteritems(kwargs):
             if hasattr(self, attribute):
@@ -354,6 +364,10 @@ class Episode(object):
                     transcriptElem.attrib['language'] = transcript.language
                 if transcript.is_caption:
                     transcriptElem.attrib['rel'] = "captions"
+
+        if self.location:
+            locationElem = self.location.rss_entry()
+            entry.append(locationElem)
 
         return entry
 
@@ -740,3 +754,34 @@ class Episode(object):
         """
         self.transcripts.append(new_transcript)
         return new_transcript
+
+    @property
+    def location(self):
+        """Object of :class:`~podgen.Location` with data about the episode location
+
+        The location helps into parsing coordinaes and geo uri::
+
+            >>> e.location = Location("Austin, TX", osm="R113314")
+            >>> e.location.text
+            'Austin, TX'
+            >>> e.location.osm
+            'R113314'
+            >>> e.location.latitude = 30.2672
+            >>> e.location.longitude = 97.7431
+            >>> e.location.geo
+            'geo:30.2672,97.7431'
+
+        :type: :obj:`podgen.Location`
+        """
+        return self.__location
+
+    @location.setter
+    def location(self, location):
+        if location is None:
+            self.__location = None
+        else:
+            if not isinstance(location, Location):
+                raise ValueError("Location attribute must be a podgen.Location object."
+                                 "Received %r instead" % location)
+            else:
+                self.__location = location
