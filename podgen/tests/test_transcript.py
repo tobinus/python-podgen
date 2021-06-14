@@ -135,7 +135,6 @@ class TestTranscript(unittest.TestCase):
             assert len(w)==1
             assert issubclass(w[-1].category, NotSupportedByItunesWarning)
 
-
     def test_wrongUrl(self):
         self.assertRaises(ValueError, Transcript, "Not an actual url", self.type)
 

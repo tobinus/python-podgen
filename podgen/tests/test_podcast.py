@@ -619,7 +619,7 @@ class TestPodcast(unittest.TestCase):
         # upgrade, we will only include the new RSS tag if this field has been
         # changed from its default. Episodic is the default either way.
         assert podcast_type is None
-    
+
     def test_isSerialWhenTrue(self):
         self.fg.is_serial = True
 

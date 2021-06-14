@@ -357,7 +357,6 @@ class Podcast(object):
                                 "match any attribute in Podcast." %
                                 (attribute, value))
 
-
     @property
     def episodes(self):
         """List of :class:`.Episode` objects that are part of this podcast.
@@ -893,7 +892,6 @@ class Podcast(object):
                                        podgen.version.version_full,
                                        podgen.version.website
                                    )
-
 
     @property
     def authors(self):
