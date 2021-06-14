@@ -17,7 +17,7 @@ import warnings
 
 from lxml import etree
 
-from podgen import Person, Media, Podcast, htmlencode, Episode, Transcript, \
+from podgen import Person, Media, Podcast, htmlencode, Episode, Transcript, Location,\
     NotSupportedByItunesWarning, EPISODE_TYPE_FULL, EPISODE_TYPE_BONUS, \
     EPISODE_TYPE_TRAILER
 import datetime
@@ -769,3 +769,8 @@ class TestBaseEpisode(unittest.TestCase):
 
         fe.transcripts.remove(t1)
         assert len(fe.transcripts) == transcript_tags_number
+
+    def test_settingLocation(self):
+        self.fe.location = Location("My location")
+        assert self.fe.location
+        assert self.fe.location.text == "My location"
