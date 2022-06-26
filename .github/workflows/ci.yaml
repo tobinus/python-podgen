@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - develop
-      - switch-to-github-actions
 
 jobs:
   setup-test:
