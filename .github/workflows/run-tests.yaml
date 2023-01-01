@@ -1,14 +1,12 @@
-name: Build Podgen
+name: Run tests
 on:
-  push:
-    branches:
-      - develop
+  push: {}
+  workflow_call: {}
 
 jobs:
   setup-test:
-    name: Setup and Test
+    name: Install and test in Python ${{ matrix.python-version }}
     runs-on: ubuntu-18.04
-    environment: dev
     strategy:
       matrix:
         python-version: ["2.7", "3.4", "3.5", "3.6", "3.7"]
@@ -16,10 +14,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Setup up Python ${{ matrix.python-version }}
+
+      - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v3
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
@@ -27,6 +27,7 @@ jobs:
           if [[ ${{ matrix.python-version }} == 3.4 ]]; then pip install 'lxml<4.4.0'; fi
           if [[ ${{ matrix.python-version }} == 2.7 ]]; then pip install 'zipp<2,>=0.5'; fi
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
       - name: Test
         run: |
           make test

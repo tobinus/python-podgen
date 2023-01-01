@@ -2,9 +2,9 @@
 PodGen
 ======
 
-.. image:: https://travis-ci.org/tobinus/python-podgen.svg?branch=master
-   :target: https://travis-ci.com/tobinus/python-podgen.svg?branch=master
-   :alt: Continuous Integration (Travis CI)
+.. image:: https://github.com/tobinus/python-podgen/actions/workflows/run-tests.yaml/badge.svg
+   :target: https://github.com/tobinus/python-podgen/actions/workflows/run-tests.yaml
+   :alt: Continuous Integration (GitHub Actions)
 
 .. image:: https://readthedocs.org/projects/podgen/badge/?version=latest
    :target: http://podgen.readthedocs.io/en/latest/?badge=latest
