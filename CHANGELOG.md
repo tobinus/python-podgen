@@ -8,12 +8,34 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 ### Added
 
+- Support for [all currently supported Python versions][supported-python-versions], specifically:
+  - 3.7 (from before)
+  - 3.8
+  - 3.9
+  - 3.10
+  - 3.11
 - Support for indicating that the episodes should be consumed in order,
   by setting `Podcast.is_serial` to `True`.
 - Support for `Episode.episode_type` for indicating whether an episode 
   contains a full episode, a trailer or bonus material.
 - Support for `Episode.season` for indicating what season the episode belongs 
   to.
+
+[supported-python-versions]: https://devguide.python.org/versions/#supported-versions
+
+### Changed
+
+- We now use GitHub Actions instead of CirleCI.
+
+### Removed
+
+- Support for [Python versions that have reached end-of-life][unsupported-python-versions], specifically:
+  - 2.7
+  - 3.4
+  - 3.5
+  - 3.6
+
+[unsupported-python-versions]: https://devguide.python.org/versions/#unsupported-versions
 
 
 ## [1.1.0] - 2020-03-06
