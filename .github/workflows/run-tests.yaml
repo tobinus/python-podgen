@@ -6,7 +6,7 @@ on:
 jobs:
   setup-test:
     name: Install and test in Python ${{ matrix.python-version }}
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-18.04
     strategy:
       matrix:
         python-version: ["2.7", "3.4", "3.5", "3.6", "3.7"]
