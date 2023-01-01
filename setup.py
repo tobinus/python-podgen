@@ -16,7 +16,7 @@ setup(
         license = 'FreeBSD and LGPLv3+',
         install_requires = ['lxml', 'dateutils', 'future', 'pytz', 'tinytag',
                             'requests'],
-        python_requires = '>=3.7, <4.0',
+        python_requires = '>=3.7',
         classifiers = [
             'Development Status :: 5 - Production/Stable',
             'Intended Audience :: Developers',
