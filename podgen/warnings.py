@@ -31,7 +31,7 @@ class NotRecommendedWarning(PodgenWarning):
 
 class LegacyCategoryWarning(PodgenWarning):
     """
-    Indicates that the category created is an old category. It will still be
+    Indicates that the categories created is an old categories. It will still be
     accepted by Apple Podcasts, but it would be wise to use the new categories
     since they may have more relevant options for your podcast.
 

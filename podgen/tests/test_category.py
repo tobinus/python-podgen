@@ -35,45 +35,45 @@ class TestCategory(unittest.TestCase):
             # Replacement of assertWarns in Python 2.7
             warnings.simplefilter("always", LegacyCategoryWarning)
 
-            c = Category("Arts", "Food")
-            self.assertEqual(c.category, "Arts")
-            self.assertEqual(c.subcategory, "Food")
+            c = Category([("Arts", "Food")])
+            self.assertEqual(c.categories[0][0], "Arts")
+            self.assertEqual(c.categories[0][1], "Food")
 
             # No warning should be given
             # Replacement of assertWarns in Python 2.7
             self.assertEqual(len(w), 0);
 
     def test_constructorWithoutSubcategory(self):
-        c = Category("Arts")
-        self.assertEqual(c.category, "Arts")
-        self.assertTrue(c.subcategory is None)
+        c = Category([("Arts",)])
+        self.assertEqual(c.categories[0][0], "Arts")
+        self.assertTrue(c.categories[0][1] is None)
 
     def test_constructorInvalidCategory(self):
-        self.assertRaises(ValueError, Category, "Farts", "Food")
+        self.assertRaises(ValueError, Category, [("Farts", "Food")])
 
     def test_constructorInvalidSubcategory(self):
-        self.assertRaises(ValueError, Category, "Arts", "Flood")
+        self.assertRaises(ValueError, Category, [("Arts", "Flood")])
 
     def test_constructorSubcategoryWithoutCategory(self):
-        self.assertRaises((ValueError, TypeError), Category, None, "Food")
+        self.assertRaises((ValueError, TypeError, AttributeError), Category, [(None, "Food")])
 
     def test_constructorCaseInsensitive(self):
-        c = Category("arTS", "FOOD")
-        self.assertEqual(c.category, "Arts")
-        self.assertEqual(c.subcategory, "Food")
+        c = Category([("arTS", "FOOD")])
+        self.assertEqual(c.categories[0][0], "Arts")
+        self.assertEqual(c.categories[0][1], "Food")
 
     def test_immutable(self):
-        c = Category("Arts", "Food")
-        self.assertRaises(AttributeError, setattr, c, "category", "Fiction")
-        self.assertEqual(c.category, "Arts")
+        c = Category([("Arts", "Food")])
+        self.assertRaises(AttributeError, setattr, c, "categories", [("Fiction",)])
+        self.assertEqual(c.categories[0][0], "Arts")
 
-        self.assertRaises(AttributeError, setattr, c, "subcategory", "Science Fiction")
-        self.assertEqual(c.subcategory, "Food")
+        self.assertRaises(AttributeError, setattr, c, "categories", [("Fiction", "Science Fiction")])
+        self.assertEqual(c.categories[0][1], "Food")
 
     def test_escapedIsAccepted(self):
-        c = Category("Kids &amp; Family", "Pets &amp; Animals")
-        self.assertEqual(c.category, "Kids & Family")
-        self.assertEqual(c.subcategory, "Pets & Animals")
+        c = Category([("Kids &amp; Family", "Pets &amp; Animals")])
+        self.assertEqual(c.categories[0][0], "Kids & Family")
+        self.assertEqual(c.categories[0][1], "Pets & Animals")
 
     def test_oldCategoryIsAcceptedWithWarning(self):
         # Replacement of assertWarns in Python 2.7
@@ -81,8 +81,8 @@ class TestCategory(unittest.TestCase):
             # Replacement of assertWarns in Python 2.7
             warnings.simplefilter("always", LegacyCategoryWarning)
 
-            c = Category("Government & Organizations")
-            self.assertEqual(c.category, "Government & Organizations")
+            c = Category([("Government & Organizations",)])
+            self.assertEqual(c.categories[0][0], "Government & Organizations")
 
             # Replacement of assertWarns in Python 2.7
             self.assertEqual(len(w), 1)
@@ -94,9 +94,9 @@ class TestCategory(unittest.TestCase):
             # Replacement of assertWarns in Python 2.7
             warnings.simplefilter("always", LegacyCategoryWarning)
 
-            c = Category("Technology", "Podcasting")
-            self.assertEqual(c.category, "Technology")
-            self.assertEqual(c.subcategory, "Podcasting")
+            c = Category([("Technology", "Podcasting")])
+            self.assertEqual(c.categories[0][0], "Technology")
+            self.assertEqual(c.categories[0][1], "Podcasting")
 
             # Replacement of assertWarns in Python 2.7
             self.assertEqual(len(w), 1)
@@ -108,9 +108,9 @@ class TestCategory(unittest.TestCase):
             # Replacement of assertWarns in Python 2.7
             warnings.simplefilter("always", LegacyCategoryWarning)
 
-            c = Category("Science & Medicine", "Medicine")
-            self.assertEqual(c.category, "Science & Medicine")
-            self.assertEqual(c.subcategory, "Medicine")
+            c = Category([("Science & Medicine", "Medicine")])
+            self.assertEqual(c.categories[0][0], "Science & Medicine")
+            self.assertEqual(c.categories[0][1], "Medicine")
 
             # Replacement of assertWarns in Python 2.7
             self.assertEqual(len(w), 1)

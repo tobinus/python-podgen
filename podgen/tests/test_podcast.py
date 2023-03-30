@@ -427,30 +427,30 @@ class TestPodcast(unittest.TestCase):
                          channel.find("webMaster").text)
 
     def test_categoryWithoutSubcategory(self):
-        c = Category("Arts")
-        self.fg.category = c
+        c = Category([("Arts",)])
+        self.fg.categories = c
         channel = self.fg._create_rss().find("channel")
         itunes_category = channel.find("{%s}category" % self.nsItunes)
         assert itunes_category is not None
 
-        self.assertEqual(itunes_category.get("text"), c.category)
+        self.assertEqual(itunes_category.get("text"), c.categories[0][0])
 
         assert itunes_category.find("{%s}category" % self.nsItunes) is None
 
     def test_categoryWithSubcategory(self):
-        c = Category("Arts", "Food")
-        self.fg.category = c
+        c = Category([("Arts", "Food")])
+        self.fg.categories = c
         channel = self.fg._create_rss().find("channel")
         itunes_category = channel.find("{%s}category" % self.nsItunes)
         assert itunes_category is not None
         itunes_subcategory = itunes_category\
             .find("{%s}category" % self.nsItunes)
         assert itunes_subcategory is not None
-        self.assertEqual(itunes_subcategory.get("text"), c.subcategory)
+        self.assertEqual(itunes_subcategory.get("text"), c.categories[0][1])
 
     def test_categoryChecks(self):
-        c = ("Arts", "Food")
-        self.assertRaises(TypeError, setattr, self.fg, "category", c)
+        c = ([("Arts", "Food")])
+        self.assertRaises(TypeError, setattr, self.fg, "categories", c)
 
     def test_explicitIsExplicit(self):
         self.fg.explicit = True
@@ -634,6 +634,7 @@ class TestPodcast(unittest.TestCase):
 
         # Test that its contents is correct
         self.assertEqual(podcast_type.text, "serial")
+
 
 if __name__ == '__main__':
     unittest.main()

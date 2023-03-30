@@ -279,7 +279,7 @@ man_show_urls = True
 
 # Grouping the document tree into Texinfo files. List of tuples
 # (source start file, target name, title, author,
-#  dir menu entry, description, category)
+#  dir menu entry, description, categories)
 texinfo_documents = [
     ('index', 'pyPodGen.tex', u'PodGen Documentation',
         u'Lars Kiesow, Thorben Dahl', 'Lernfunk3', 'One line description of project.',

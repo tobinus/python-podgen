@@ -225,7 +225,7 @@ class Podcast(object):
         :RSS: itunes:block
         """
 
-        self.__category = None
+        self.__categories = None
 
         self.__image = None
 
@@ -582,12 +582,13 @@ class Podcast(object):
             block = etree.SubElement(channel, '{%s}block' % ITUNES_NS)
             block.text = 'Yes'
 
-        if self.category:
-            category = etree.SubElement(channel, '{%s}category' % ITUNES_NS)
-            category.attrib['text'] = self.category.category
-            if self.category.subcategory:
-                subcategory = etree.SubElement(category, '{%s}category' % ITUNES_NS)
-                subcategory.attrib['text'] = self.category.subcategory
+        if self.categories:
+            for cat in self.categories.categories:
+                category = etree.SubElement(channel, '{%s}category' % ITUNES_NS)
+                category.attrib['text'] = cat[0]
+                if cat[1]:
+                    subcategory = etree.SubElement(category, '{%s}category' % ITUNES_NS)
+                    subcategory.attrib['text'] = cat[1]
 
         if self.image:
             image = etree.SubElement(channel, '{%s}image' % ITUNES_NS)
@@ -1069,27 +1070,26 @@ class Podcast(object):
         self.__web_master = web_master
 
     @property
-    def category(self):
-        """The iTunes category, which appears in the category column
+    def categories(self):
+        """The iTunes categories, which appears in the categories column
         and in iTunes Store listings.
 
         :type: :class:`podgen.Category`
-        :RSS: itunes:category
+        :RSS: itunes:categories
         """
-        return self.__category
+        return self.__categories
 
-    @category.setter
-    def category(self, category):
-        if category is not None:
-            # Check that the category quacks like a duck
-            if hasattr(category, "category") and \
-                    hasattr(category, "subcategory"):
-                self.__category = category
+    @categories.setter
+    def categories(self, categories):
+        if categories is not None:
+            # Check that the categories quacks like a duck
+            if hasattr(categories, "categories"):
+                self.__categories = categories
             else:
                 raise TypeError("A Category(-like) object must be used, got "
-                                "%s" % category)
+                                "%s" % categories)
         else:
-            self.__category = None
+            self.__categories = None
 
     @property
     def image(self):

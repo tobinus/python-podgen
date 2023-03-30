@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-    podgen.category
+    podgen.categories
     ~~~~~~~~~~~~~~~
 
-    This module contains Category, which represents a single iTunes category.
+    This module contains Category, which represents a single iTunes categories.
 
     :copyright: 2016, Thorben Dahl <thorben@sjostrom.no>
     :license: FreeBSD and LGPL, see license.* for more details.
@@ -17,11 +17,11 @@ from podgen.warnings import LegacyCategoryWarning
 
 
 class Category(object):
-    """Immutable class representing an Apple Podcasts category.
+    """Immutable class representing an Apple Podcasts categories.
 
-    By using this class, you can be sure that the chosen category is a
-    valid category, that it is formatted correctly and you will be warned
-    when using an old category.
+    By using this class, you can be sure that the chosen categories is a
+    valid categories, that it is formatted correctly and you will be warned
+    when using an old categories.
 
     See https://help.apple.com/itc/podcasts_connect/#/itc9267a2f12 for an
     overview of the available categories and their subcategories.
@@ -35,22 +35,22 @@ class Category(object):
     .. note::
 
         The categories are case-insensitive, and you may escape ampersands.
-        The category and subcategory will end up properly capitalized and
+        The categories and subcategory will end up properly capitalized and
         with unescaped ampersands.
 
     Example::
 
-        >>> from podgen import Category
-        >>> c = Category("Music")
-        >>> c.category
+        >> from podgen import Category
+        >> c = Category("Music")
+        >> c.categories
         Music
-        >>> c.subcategory
+        >> c.subcategory
         None
-        >>>
-        >>> d = Category("games &amp; hobbies", "Video games")
-        >>> d.category
+        >>
+        >> d = Category("games &amp; hobbies", "Video games")
+        >> d.categories
         Games & Hobbies
-        >>> d.subcategory
+        >> d.subcategory
         Video Games
     """
 
@@ -212,41 +212,52 @@ class Category(object):
         ],
     }
 
-    def __init__(self, category, subcategory=None):
+    def __init__(self, categories):
         """Create new Category object. See the class description of
         :class:´~podgen.category.Category`.
 
-        :param category: Category of the podcast.
-        :type category: str
-        :param subcategory: (Optional) Subcategory of the podcast.
-        :type subcategory: str or None
+        :param categories: Categories and subcategories of the podcast.
+        :type categories: list of tuples
         """
-        if not category:
-            raise TypeError("category must be provided, was \"%s\"" % category)
+        if not categories:
+            raise TypeError("categories must be provided, was \"%s\"" % categories)
+        canonical_categories = []
         try:
-            canonical_category, canonical_subcategory = self._look_up_category(
-                category,
-                subcategory,
-                self._categories,
-            )
+            for category in categories:
+                try:
+                    subcategory = category[1]
+                except IndexError:
+                    subcategory = None
+                canonical_category, canonical_subcategory = self._look_up_category(
+                    category[0],
+                    subcategory,
+                    self._categories,
+                )
+                canonical_categories.append((canonical_category, canonical_subcategory))
         except ValueError:
-            # Maybe this is a legacy category?
-            canonical_category, canonical_subcategory = self._look_up_category(
-                category,
-                subcategory,
-                self._legacy_categories,
-            )
-            # Okay, it is, warn about this
-            warnings.warn(
-                'The category ("%s", "%s") is a legacy category. Please switch '
-                'to one of the new Apple Podcast categories.' %
-                (canonical_category, canonical_subcategory),
-                category=LegacyCategoryWarning,
-                stacklevel=2
-            )
+            # Maybe this is a legacy categories?
+            for category in categories:
+                try:
+                    subcategory = category[1]
+                except IndexError:
+                    subcategory = None
+                canonical_category, canonical_subcategory = self._look_up_category(
+                    category[0],
+                    subcategory,
+                    self._legacy_categories,
+                )
+                # Okay, it is, warn about this
+                warnings.warn(
+                    'The categories ("%s", "%s") is a legacy categories. Please switch '
+                    'to one of the new Apple Podcast categories.' %
+                    (canonical_category, canonical_subcategory),
+                    category=LegacyCategoryWarning,
+                    stacklevel=2
+                )
+                canonical_categories.append((canonical_category, canonical_subcategory))
 
-        self.__category = canonical_category
-        self.__subcategory = canonical_subcategory
+        self.__categories = canonical_categories
+        # self.__subcategory = canonical_subcategory
 
     def _look_up_category(
             self,
@@ -254,7 +265,7 @@ class Category(object):
             subcategory,
             available_categories
     ):
-        # Do a case-insensitive search for the category
+        # Do a case-insensitive search for the categories
         search_category = category.strip().replace("&amp;", "&").lower()
         for actual_category in available_categories:
             if actual_category.lower() == search_category:
@@ -262,7 +273,7 @@ class Category(object):
                 canonical_category = actual_category
                 break
         else:  # no break
-            raise ValueError('Invalid category "%s"' % category)
+            raise ValueError('Invalid categories "%s"' % category)
 
         # Do a case-insensitive search for the subcategory, if provided
         canonical_subcategory = None
@@ -274,29 +285,20 @@ class Category(object):
                     canonical_subcategory = actual_subcategory
                     break
             else:  # no break
-                raise ValueError('Invalid subcategory "%s" under category "%s"'
+                raise ValueError('Invalid subcategory "%s" under categories "%s"'
                                  % (subcategory, canonical_category))
 
         return canonical_category, canonical_subcategory
 
     @property
-    def category(self):
-        """The category represented by this object. Read-only.
+    def categories(self):
+        """The categories represented by this object. Read-only.
 
-        :type: :obj:`str`
+        :type: :obj:`list`
         """
-        return self.__category
-        # Make this attribute read-only by not implementing setter
-
-    @property
-    def subcategory(self):
-        """The subcategory this object represents. Read-only.
-
-        :type: :obj:`str`
-        """
-        return self.__subcategory
+        return self.__categories
         # Make this attribute read-only by not implementing setter
 
     def __repr__(self):
-        return 'Category(category=%s, subcategory=%s)' % \
-               (self.category, self.subcategory)
+        return 'Category(categories=%s)' % \
+               self.categories
