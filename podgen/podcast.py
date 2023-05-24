@@ -20,6 +20,7 @@ import dateutil.parser
 import dateutil.tz
 
 from podgen import EPISODE_TYPE_FULL
+from podgen.decorators import deprecated
 from podgen.episode import Episode
 from podgen.warnings import NotSupportedByItunesWarning
 from podgen.util import ensure_format, formatRFC2822, listToHumanreadableStr, \
@@ -670,6 +671,7 @@ class Podcast(object):
             'type="text/xsl" href="' + quote_sanitized + '"',
         ), encoding="UTF-8").decode("UTF-8")
 
+    @deprecated('1.2.0', '2.0.0', 'Please use rss_str() directly.')
     def __str__(self):
         """Print the podcast in RSS format, using the default options.
 

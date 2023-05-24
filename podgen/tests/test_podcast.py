@@ -305,6 +305,15 @@ class TestPodcast(unittest.TestCase):
         assert software_name in generator
         assert self.programname not in generator
 
+    def test__str__deprecation(self):
+        # Context manager catches and records deprecation warnings.
+        with warnings.catch_warnings(record=True) as catched_warning:
+            warnings.simplefilter("always")
+
+            assert str(self.fg)
+            assert len(catched_warning) == 1
+            assert issubclass(catched_warning[-1].category, DeprecationWarning)
+
     def test_str(self):
         assert str(self.fg) == self.fg.rss_str(
             minimize=False,
