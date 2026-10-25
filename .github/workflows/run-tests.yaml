@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-18.04
     strategy:
       matrix:
-        python-version: ["2.7", "3.4", "3.5", "3.6", "3.7"]
+        python-version: ["3.4", "3.5", "3.6", "3.7"]
 
     steps:
       - name: Checkout
@@ -25,7 +25,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install -U setuptools
           if [[ ${{ matrix.python-version }} == 3.4 ]]; then pip install 'lxml<4.4.0'; fi
-          if [[ ${{ matrix.python-version }} == 2.7 ]]; then pip install 'zipp<2,>=0.5'; fi
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Test

@@ -12,8 +12,7 @@
 # Support for Python 2.7
 from __future__ import absolute_import, division, print_function, unicode_literals
 from builtins import *
-from future.moves.urllib.parse import urlparse
-from future.utils import raise_from
+from urllib.parse import urlparse
 
 import os
 import tempfile
@@ -307,11 +306,11 @@ class Media(object):
         try:
             return self.file_types[file_extension]
         except KeyError as e:
-            raise_from(ValueError(
+            raise ValueError(
                 "The file extension %s was not recognized, which means it's "
                 "not supported by iTunes. If this is intended, please provide "
                 "the type yourself so clients can see what type of file it is."
-                % file_extension), e)
+                % file_extension) from e
 
     @property
     def duration(self):
