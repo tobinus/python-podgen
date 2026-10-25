@@ -12,7 +12,6 @@
 # Support for Python 2.7
 from __future__ import absolute_import, division, print_function, unicode_literals
 from builtins import *
-from future.utils import raise_from
 
 import unittest
 import warnings
@@ -494,8 +493,8 @@ class TestPodcast(unittest.TestCase):
             try:
                 self.assertRaises(ValueError, fg._create_rss)
             except AssertionError as e:
-                raise_from(AssertionError(
-                    "The test failed for %s" % test_property), e)
+                raise AssertionError(
+                    "The test failed for %s" % test_property) from e
 
     def test_withholdFromItunesOffByDefault(self):
         assert not self.fg.withhold_from_itunes

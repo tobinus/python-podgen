@@ -12,7 +12,6 @@
 # Support for Python 2.7
 from __future__ import absolute_import, division, print_function, unicode_literals
 from builtins import *
-from future.utils import iteritems
 
 from lxml import etree
 from datetime import datetime
@@ -348,7 +347,7 @@ class Podcast(object):
         """
 
         # Populate the podcast with the keyword arguments
-        for attribute, value in iteritems(kwargs):
+        for attribute, value in kwargs.items():
             if hasattr(self, attribute):
                 setattr(self, attribute, value)
             else:

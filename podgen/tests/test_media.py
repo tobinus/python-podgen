@@ -11,7 +11,6 @@
 # Support for Python 2.7
 from __future__ import absolute_import, division, print_function, unicode_literals
 from builtins import *
-from future.utils import iteritems
 
 import os
 import tempfile
@@ -20,7 +19,7 @@ import pickle
 import unittest
 import warnings
 from datetime import timedelta
-import mock
+from unittest import mock
 import io
 
 from podgen import Media, NotSupportedByItunesWarning
@@ -133,7 +132,7 @@ class TestMedia(unittest.TestCase):
             '.epub': set(["document/x-epub"]),
         }
 
-        for (file_extension, allowed_types) in iteritems(types):
+        for (file_extension, allowed_types) in types.items():
             m = Media(url % file_extension)
             assert m.type in allowed_types, "%s gave type %s, expected %s" % \
                                             (file_extension, m.type,
@@ -183,7 +182,7 @@ class TestMedia(unittest.TestCase):
             "145B": 145,
         }
 
-        for (str_size, expected_size) in iteritems(sizes):
+        for (str_size, expected_size) in sizes.items():
             self.assertEqual(expected_size, Media._str_to_bytes(str_size))
 
     def test_assigningDuration(self):
